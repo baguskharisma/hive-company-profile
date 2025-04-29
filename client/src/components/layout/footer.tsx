@@ -105,7 +105,7 @@ export default function Footer() {
             
             <div className="mt-6">
               <h4 className="font-poppins font-medium mb-3">Subscribe to our newsletter</h4>
-              <form className="flex" onSubmit={handleSubscribe}>
+              <form className="flex gap-2" onSubmit={handleSubscribe}>
                 <Input 
                   type="email" 
                   placeholder="Your email" 
