@@ -37,7 +37,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-text text-white pt-20 pb-10">
+    <footer className="bg-primary text-white pt-20 pb-10">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           <div>
@@ -45,7 +45,7 @@ export default function Footer() {
               <div className="h-10 w-10 rounded-lg bg-white flex items-center justify-center text-primary font-poppins font-bold text-xl mr-2">P</div>
               <span className="font-poppins font-bold text-xl text-white">Pixel Perfect</span>
             </Link>
-            <p className="text-gray-300 mb-6">We create digital experiences that help brands stand out, connect with their audience, and achieve their goals.</p>
+            <p className="text-slate-100 mb-6">We create digital experiences that help brands stand out, connect with their audience, and achieve their goals.</p>
             <div className="flex space-x-4">
               <a href="#" className="text-white hover:text-secondary transition-all">
                 <Twitter className="h-5 w-5" />
@@ -65,24 +65,24 @@ export default function Footer() {
           <div>
             <h3 className="font-poppins font-bold text-xl mb-6">Company</h3>
             <ul className="space-y-3">
-              <li><Link href="/" className="text-gray-300 hover:text-white transition-all">About Us</Link></li>
-              <li><Link href="/showcase" className="text-gray-300 hover:text-white transition-all">Our Work</Link></li>
-              <li><Link href="/products" className="text-gray-300 hover:text-white transition-all">Services</Link></li>
-              <li><Link href="/careers" className="text-gray-300 hover:text-white transition-all">Careers</Link></li>
-              <li><Link href="/blog" className="text-gray-300 hover:text-white transition-all">Blog</Link></li>
-              <li><Link href="#contact" className="text-gray-300 hover:text-white transition-all">Contact</Link></li>
+              <li><Link href="/" className="text-slate-100 hover:text-secondary transition-all">About Us</Link></li>
+              <li><Link href="/showcase" className="text-slate-100 hover:text-secondary transition-all">Our Work</Link></li>
+              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Services</Link></li>
+              <li><Link href="/careers" className="text-slate-100 hover:text-secondary transition-all">Careers</Link></li>
+              <li><Link href="/blog" className="text-slate-100 hover:text-secondary transition-all">Blog</Link></li>
+              <li><Link href="#contact" className="text-slate-100 hover:text-secondary transition-all">Contact</Link></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-poppins font-bold text-xl mb-6">Services</h3>
             <ul className="space-y-3">
-              <li><Link href="/products" className="text-gray-300 hover:text-white transition-all">Web Development</Link></li>
-              <li><Link href="/products" className="text-gray-300 hover:text-white transition-all">Mobile App Development</Link></li>
-              <li><Link href="/products" className="text-gray-300 hover:text-white transition-all">UI/UX Design</Link></li>
-              <li><Link href="/products" className="text-gray-300 hover:text-white transition-all">Digital Marketing</Link></li>
-              <li><Link href="/products" className="text-gray-300 hover:text-white transition-all">Brand Identity</Link></li>
-              <li><Link href="/products" className="text-gray-300 hover:text-white transition-all">Analytics & Optimization</Link></li>
+              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Web Development</Link></li>
+              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Mobile App Development</Link></li>
+              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">UI/UX Design</Link></li>
+              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Digital Marketing</Link></li>
+              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Brand Identity</Link></li>
+              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Analytics & Optimization</Link></li>
             </ul>
           </div>
           
@@ -91,15 +91,15 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 mt-1 mr-3 text-secondary" />
-                <span className="text-gray-300">123 Creative Street, New York, NY 10001, USA</span>
+                <span className="text-slate-100">123 Creative Street, New York, NY 10001, USA</span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 mr-3 text-secondary" />
-                <a href="tel:+1234567890" className="text-gray-300 hover:text-white transition-all">+1 (234) 567-890</a>
+                <a href="tel:+1234567890" className="text-slate-100 hover:text-secondary transition-all">+1 (234) 567-890</a>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 mr-3 text-secondary" />
-                <a href="mailto:info@pixelperfect.com" className="text-gray-300 hover:text-white transition-all">info@pixelperfect.com</a>
+                <a href="mailto:info@pixelperfect.com" className="text-slate-100 hover:text-secondary transition-all">info@pixelperfect.com</a>
               </li>
             </ul>
             
@@ -121,14 +121,14 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-gray-700 pt-8">
+        <div className="border-t border-accent/30 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm mb-4 md:mb-0">© 2023 Pixel Perfect. All rights reserved.</p>
+            <p className="text-slate-200 text-sm mb-4 md:mb-0">© 2023 Pixel Perfect. All rights reserved.</p>
             <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-all">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-all">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-all">Cookie Policy</a>
-              <Link href="/auth" className="text-gray-400 hover:text-white text-sm transition-all">Admin Login</Link>
+              <a href="#" className="text-slate-200 hover:text-secondary text-sm transition-all">Privacy Policy</a>
+              <a href="#" className="text-slate-200 hover:text-secondary text-sm transition-all">Terms of Service</a>
+              <a href="#" className="text-slate-200 hover:text-secondary text-sm transition-all">Cookie Policy</a>
+              <Link href="/auth" className="text-slate-200 hover:text-secondary text-sm transition-all">Admin Login</Link>
             </div>
           </div>
         </div>
