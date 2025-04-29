@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
+import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { AdminLayout } from '@/components/admin/admin-layout';
 import { DataTable } from '@/components/ui/data-table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Product, InsertProduct } from '@shared/schema';
@@ -11,27 +10,15 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { ProductForm } from '@/components/admin/product-form';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Trash2, Plus, Package2, Layers } from 'lucide-react';
+import { Edit, Trash2, Plus, Package2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { SidebarNav, adminNavItems } from '@/components/ui/sidebar-nav';
 
 // Define column type compatible with our DataTable
 type Column<T> = {
   header: string;
   accessorKey: keyof T;
   cell?: (item: T) => React.ReactNode;
-};
-
-// Animation variants
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.05,
-      duration: 0.5
-    }
-  })
 };
 
 export default function AdminProducts() {
@@ -155,15 +142,12 @@ export default function AdminProducts() {
       accessorKey: 'category' as keyof Product,
       header: 'Category',
       cell: (item: Product) => (
-        <Badge variant="outline" className="bg-gray-50">{item.category}</Badge>
+        <Badge variant="outline">{item.category}</Badge>
       ),
     },
     {
       accessorKey: 'price' as keyof Product,
       header: 'Price',
-      cell: (item: Product) => (
-        <div className="font-medium text-primary">{item.price}</div>
-      ),
     },
     {
       accessorKey: 'featured' as keyof Product,
@@ -171,9 +155,9 @@ export default function AdminProducts() {
       cell: (item: Product) => (
         <div>
           {item.featured ? (
-            <Badge variant="default" className="bg-primary text-white">Featured</Badge>
+            <Badge variant="default">Featured</Badge>
           ) : (
-            <Badge variant="outline" className="text-gray-500">No</Badge>
+            <Badge variant="outline">No</Badge>
           )}
         </div>
       ),
@@ -186,7 +170,6 @@ export default function AdminProducts() {
       <Button
         variant="ghost"
         size="icon"
-        className="hover:bg-primary/10 hover:text-primary transition-colors"
         onClick={() => {
           setCurrentProduct(item);
           setIsDialogOpen(true);
@@ -197,7 +180,6 @@ export default function AdminProducts() {
       <Button
         variant="ghost"
         size="icon"
-        className="hover:bg-destructive/10 hover:text-destructive transition-colors"
         onClick={() => {
           setProductToDelete(item);
           setIsDeleteDialogOpen(true);
@@ -211,140 +193,105 @@ export default function AdminProducts() {
   // If user is not authenticated or not an admin, show a message
   if (!user || !user.isAdmin) {
     return (
-      <AdminLayout>
-        <div className="p-4">
-          <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
-          <p>You do not have permission to access this page.</p>
-        </div>
-      </AdminLayout>
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
+        <p>You do not have permission to access this page.</p>
+      </div>
     );
   }
   
   return (
-    <AdminLayout>
-      <div className="p-6">
-        <motion.div 
-          className="flex justify-between items-center mb-6"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Package2 className="h-5 w-5" />
-            </div>
-            <h1 className="text-2xl font-bold">Products Management</h1>
+    <div className="bg-background min-h-screen">
+      {/* Admin Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-30 border-b">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center">
+            <Link href="/admin/dashboard" className="flex items-center">
+              <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center text-white font-poppins font-bold text-xl mr-2">P</div>
+              <span className="font-poppins font-bold text-xl">Admin Dashboard</span>
+            </Link>
           </div>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button 
-              onClick={() => {
-                setCurrentProduct(null);
-                setIsDialogOpen(true);
-              }}
-              className="gap-2 bg-primary hover:bg-primary/90"
-            >
-              <Plus size={16} />
-              Add New Product
-            </Button>
-          </motion.div>
-        </motion.div>
-        
-        {/* Stats Section */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <div className="bg-white shadow-sm rounded-lg p-4 border border-gray-100">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm text-gray-500">Total Products</p>
-                <h3 className="text-2xl font-bold mt-1">{products.length}</h3>
-              </div>
-              <div className="bg-primary/10 p-2 rounded-lg">
-                <Layers className="h-5 w-5 text-primary" />
-              </div>
+        </div>
+      </header>
+      
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid md:grid-cols-4 gap-6">
+          {/* Sidebar */}
+          <div className="md:col-span-1">
+            <div className="bg-white rounded-xl shadow-sm p-4">
+              <SidebarNav items={adminNavItems} className="flex flex-col" />
             </div>
           </div>
-          <div className="bg-white shadow-sm rounded-lg p-4 border border-gray-100">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm text-gray-500">Categories</p>
-                <h3 className="text-2xl font-bold mt-1">{new Set(products.map(p => p.category)).size}</h3>
+          
+          {/* Main Content */}
+          <div className="md:col-span-3">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center text-white">
+                    <Package2 className="h-5 w-5" />
+                  </div>
+                  <h1 className="font-poppins font-bold text-2xl">Products Management</h1>
+                </div>
+                <Button
+                  className="bg-primary hover:bg-primary/90 text-white font-medium"
+                  onClick={() => {
+                    setCurrentProduct(null);
+                    setIsDialogOpen(true);
+                  }}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add New Product
+                </Button>
               </div>
-              <div className="bg-secondary/10 p-2 rounded-lg">
-                <Layers className="h-5 w-5 text-secondary" />
-              </div>
+              
+              {/* Products Table */}
+              <DataTable
+                columns={columns}
+                data={products}
+                isLoading={isLoading}
+                searchColumn="name"
+                actions={actions}
+              />
+              
+              {/* Add/Edit Product Dialog */}
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>{currentProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
+                  </DialogHeader>
+                  <ProductForm
+                    product={currentProduct}
+                    onSubmit={handleSubmit}
+                    isSubmitting={addMutation.isPending || updateMutation.isPending}
+                  />
+                </DialogContent>
+              </Dialog>
+              
+              {/* Delete Confirmation Dialog */}
+              <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete the product "{productToDelete?.name}". This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => productToDelete && deleteMutation.mutate(productToDelete.id)}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
-          <div className="bg-white shadow-sm rounded-lg p-4 border border-gray-100">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-sm text-gray-500">Featured Products</p>
-                <h3 className="text-2xl font-bold mt-1">{products.filter(p => p.featured).length}</h3>
-              </div>
-              <div className="bg-indigo-100 p-2 rounded-lg">
-                <Layers className="h-5 w-5 text-indigo-600" />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-        
-        {/* Products Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white shadow-sm rounded-lg border border-gray-100 overflow-hidden"
-        >
-          <DataTable
-            columns={columns}
-            data={products}
-            isLoading={isLoading}
-            searchColumn="name"
-            actions={actions}
-          />
-        </motion.div>
-        
-        {/* Add/Edit Product Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>{currentProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
-            </DialogHeader>
-            <ProductForm
-              product={currentProduct}
-              onSubmit={handleSubmit}
-              isSubmitting={addMutation.isPending || updateMutation.isPending}
-            />
-          </DialogContent>
-        </Dialog>
-        
-        {/* Delete Confirmation Dialog */}
-        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This will permanently delete the product "{productToDelete?.name}". This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => productToDelete && deleteMutation.mutate(productToDelete.id)}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        </div>
       </div>
-    </AdminLayout>
+    </div>
   );
 }

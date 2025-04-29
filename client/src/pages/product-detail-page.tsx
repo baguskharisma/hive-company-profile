@@ -74,7 +74,7 @@ export default function ProductDetailPage() {
   return (
     <>
       <Header />
-      <div className="container py-8 relative">
+      <div className="container py-8 relative mx-auto">
         {/* Back button */}
         <motion.div 
           className="mb-6"

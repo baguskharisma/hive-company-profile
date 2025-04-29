@@ -69,7 +69,7 @@ export default function ProductsPage() {
       </section>
       
       {/* Products Gallery */}
-      <div className="container py-12 space-y-8 relative z-10">
+      <div className="container py-12 space-y-8 relative z-10 mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
