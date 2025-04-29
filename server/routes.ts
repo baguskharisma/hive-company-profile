@@ -6,6 +6,7 @@ import { z } from "zod";
 import {
   insertProjectSchema,
   insertServiceSchema,
+  insertProductSchema,
   insertJobOpeningSchema,
   insertJobApplicationSchema,
   insertBlogArticleSchema
@@ -175,6 +176,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     if (!success) {
       return res.status(404).json({ message: "Service not found" });
+    }
+    
+    res.status(204).end();
+  });
+
+  // Products routes
+  app.get("/api/products", async (_req: Request, res: Response) => {
+    const products = await storage.getAllProducts();
+    res.json(products);
+  });
+
+  app.get("/api/products/popular", async (_req: Request, res: Response) => {
+    const popularProducts = await storage.getPopularProducts();
+    res.json(popularProducts);
+  });
+
+  app.get("/api/products/category/:category", async (req: Request, res: Response) => {
+    const category = req.params.category;
+    const products = await storage.getProductsByCategory(category);
+    res.json(products);
+  });
+
+  app.get("/api/products/:id", async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const product = await storage.getProductById(id);
+    
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    
+    res.json(product);
+  });
+
+  app.post("/api/products", async (req: Request, res: Response) => {
+    try {
+      // Authorize - only admin can create products
+      if (!req.isAuthenticated() || !req.user.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const validatedData = insertProductSchema.parse(req.body);
+      const newProduct = await storage.createProduct(validatedData);
+      res.status(201).json(newProduct);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid product data", errors: error.format() });
+      }
+      res.status(500).json({ message: "Error creating product" });
+    }
+  });
+
+  app.put("/api/products/:id", async (req: Request, res: Response) => {
+    try {
+      // Authorize - only admin can update products
+      if (!req.isAuthenticated() || !req.user.isAdmin) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const id = parseInt(req.params.id);
+      const validatedData = insertProductSchema.partial().parse(req.body);
+      const updatedProduct = await storage.updateProduct(id, validatedData);
+      
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      
+      res.json(updatedProduct);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid product data", errors: error.format() });
+      }
+      res.status(500).json({ message: "Error updating product" });
+    }
+  });
+
+  app.delete("/api/products/:id", async (req: Request, res: Response) => {
+    // Authorize - only admin can delete products
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    
+    const id = parseInt(req.params.id);
+    const success = await storage.deleteProduct(id);
+    
+    if (!success) {
+      return res.status(404).json({ message: "Product not found" });
     }
     
     res.status(204).end();

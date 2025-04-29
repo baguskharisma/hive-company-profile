@@ -224,6 +224,55 @@ export class MemStorage implements IStorage {
     return this.servicesData.delete(id);
   }
   
+  // Products
+  async getAllProducts(): Promise<Product[]> {
+    return Array.from(this.productsData.values());
+  }
+  
+  async getPopularProducts(): Promise<Product[]> {
+    return Array.from(this.productsData.values()).filter(
+      (product) => product.isPopular
+    );
+  }
+  
+  async getProductById(id: number): Promise<Product | undefined> {
+    return this.productsData.get(id);
+  }
+  
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    return Array.from(this.productsData.values()).filter(
+      (product) => product.category === category
+    );
+  }
+  
+  async createProduct(product: InsertProduct): Promise<Product> {
+    const id = this.currentProductId++;
+    const now = new Date();
+    const newProduct: Product = { ...product, id, createdAt: now };
+    this.productsData.set(id, newProduct);
+    return newProduct;
+  }
+  
+  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined> {
+    const existingProduct = this.productsData.get(id);
+    
+    if (!existingProduct) {
+      return undefined;
+    }
+    
+    const updatedProduct: Product = {
+      ...existingProduct,
+      ...product,
+    };
+    
+    this.productsData.set(id, updatedProduct);
+    return updatedProduct;
+  }
+  
+  async deleteProduct(id: number): Promise<boolean> {
+    return this.productsData.delete(id);
+  }
+  
   // Job Openings
   async getAllJobOpenings(): Promise<JobOpening[]> {
     return Array.from(this.jobOpeningsData.values());
@@ -447,6 +496,74 @@ export class MemStorage implements IStorage {
     
     services.forEach(service => {
       this.createService(service);
+    });
+    
+    // Seed products
+    const products: InsertProduct[] = [
+      {
+        name: 'Pixel CRM',
+        description: 'An all-in-one customer relationship management solution designed for creative agencies to manage client interactions, projects, and sales pipelines.',
+        category: 'Business Solutions',
+        price: 'From $29/month',
+        features: [
+          'Client management',
+          'Project tracking',
+          'Sales pipeline',
+          'Email integration',
+          'Custom reporting'
+        ],
+        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop',
+        isPopular: true
+      },
+      {
+        name: 'Pixel CMS',
+        description: 'A powerful content management system that makes it easy to create, manage, and publish content for websites and digital platforms.',
+        category: 'Content Solutions',
+        price: 'From $19/month',
+        features: [
+          'Intuitive editor',
+          'Media management',
+          'SEO tools',
+          'Multi-user support',
+          'Version control'
+        ],
+        imageUrl: 'https://images.unsplash.com/photo-1643116774075-acc00caa9a7b?w=600&auto=format&fit=crop',
+        isPopular: true
+      },
+      {
+        name: 'Pixel ERP',
+        description: 'A comprehensive enterprise resource planning system that integrates all aspects of your business into one unified platform.',
+        category: 'Business Solutions',
+        price: 'From $49/month',
+        features: [
+          'Finance management',
+          'Inventory control',
+          'HR management',
+          'Supply chain tracking',
+          'Business intelligence'
+        ],
+        imageUrl: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&auto=format&fit=crop',
+        isPopular: false
+      },
+      {
+        name: 'Pixel Analytics',
+        description: 'An advanced analytics platform that helps you understand user behavior and make data-driven decisions.',
+        category: 'Analytics Tools',
+        price: 'From $24/month',
+        features: [
+          'Real-time dashboards',
+          'User behavior tracking',
+          'Conversion analytics',
+          'Custom reports',
+          'Data export'
+        ],
+        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop',
+        isPopular: false
+      }
+    ];
+    
+    products.forEach(product => {
+      this.createProduct(product);
     });
     
     // Seed job openings
