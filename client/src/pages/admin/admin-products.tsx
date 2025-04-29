@@ -9,10 +9,16 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { ProductForm } from '@/components/admin/product-form';
-import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+
+// Define column type compatible with our DataTable
+type Column<T> = {
+  header: string;
+  accessorKey: keyof T;
+  cell?: (item: T) => React.ReactNode;
+};
 
 export default function AdminProducts() {
   const { toast } = useToast();
@@ -123,31 +129,31 @@ export default function AdminProducts() {
   };
   
   // Table columns definition
-  const columns: ColumnDef<Product>[] = [
+  const columns = [
     {
-      accessorKey: 'name',
+      accessorKey: 'name' as keyof Product,
       header: 'Name',
-      cell: ({ row }) => (
-        <div className="font-medium">{row.original.name}</div>
+      cell: (item: Product) => (
+        <div className="font-medium">{item.name}</div>
       ),
     },
     {
-      accessorKey: 'category',
+      accessorKey: 'category' as keyof Product,
       header: 'Category',
-      cell: ({ row }) => (
-        <Badge variant="outline">{row.original.category}</Badge>
+      cell: (item: Product) => (
+        <Badge variant="outline">{item.category}</Badge>
       ),
     },
     {
-      accessorKey: 'price',
+      accessorKey: 'price' as keyof Product,
       header: 'Price',
     },
     {
-      accessorKey: 'featured',
+      accessorKey: 'featured' as keyof Product,
       header: 'Featured',
-      cell: ({ row }) => (
+      cell: (item: Product) => (
         <div>
-          {row.original.featured ? (
+          {item.featured ? (
             <Badge variant="default">Featured</Badge>
           ) : (
             <Badge variant="outline">No</Badge>
@@ -155,34 +161,33 @@ export default function AdminProducts() {
         </div>
       ),
     },
-    {
-      id: 'actions',
-      cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              setCurrentProduct(row.original);
-              setIsDialogOpen(true);
-            }}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              setProductToDelete(row.original);
-              setIsDeleteDialogOpen(true);
-            }}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-    },
   ];
+  
+  // Define actions for each row
+  const actions = (item: Product) => (
+    <div className="flex gap-2">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => {
+          setCurrentProduct(item);
+          setIsDialogOpen(true);
+        }}
+      >
+        <Edit className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => {
+          setProductToDelete(item);
+          setIsDeleteDialogOpen(true);
+        }}
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
+    </div>
+  );
   
   // If user is not authenticated or not an admin, show a message
   if (!user || !user.isAdmin) {
@@ -215,6 +220,7 @@ export default function AdminProducts() {
           data={products}
           isLoading={isLoading}
           searchColumn="name"
+          actions={actions}
         />
         
         {/* Add/Edit Product Dialog */}
