@@ -40,6 +40,18 @@ async function main() {
       created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
     );
     
+    CREATE TABLE IF NOT EXISTS products (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT NOT NULL,
+      category TEXT NOT NULL,
+      price TEXT NOT NULL,
+      features TEXT[] NOT NULL,
+      image_url TEXT NOT NULL,
+      is_popular BOOLEAN NOT NULL DEFAULT FALSE,
+      created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    );
+    
     CREATE TABLE IF NOT EXISTS job_openings (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
