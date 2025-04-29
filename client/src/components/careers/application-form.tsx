@@ -69,16 +69,28 @@ export default function ApplicationForm({ selectedJob, onSuccess }: ApplicationF
   const applicationMutation = useMutation({
     mutationFn: async (data: z.infer<typeof applicationSchema>) => {
       const formData = new FormData();
+      
+      // Add form fields to FormData
       Object.entries(data).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           formData.append(key, value.toString());
         }
       });
       
+      // Handle file upload explicitly
       if (resumeFile) {
-        formData.append("resume", resumeFile);
+        console.log("Appending file:", resumeFile.name, resumeFile.type, resumeFile.size);
+        formData.append("resume", resumeFile, resumeFile.name);
+      } else {
+        console.log("No resume file selected");
       }
       
+      // Log form data for debugging
+      for (const pair of formData.entries()) {
+        console.log(`${pair[0]}: ${pair[1] instanceof File ? `File: ${(pair[1] as File).name}` : pair[1]}`);
+      }
+      
+      // Direct fetch instead of apiRequest to handle FormData
       const res = await fetch("/api/applications", {
         method: "POST",
         body: formData,
@@ -214,16 +226,53 @@ export default function ApplicationForm({ selectedJob, onSuccess }: ApplicationF
         
         <div className="mb-4">
           <FormLabel>Resume</FormLabel>
-          <div className="w-full border border-gray-300 border-dashed rounded-lg px-4 py-4 bg-white">
+          <div 
+            className="w-full border border-gray-300 border-dashed rounded-lg px-4 py-4 bg-white"
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.currentTarget.classList.add("border-primary");
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.currentTarget.classList.remove("border-primary");
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.currentTarget.classList.remove("border-primary");
+              
+              if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if (file.size > 5 * 1024 * 1024) {
+                  toast({
+                    title: "File too large",
+                    description: "Please upload a file smaller than 5MB",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                if (!file.type.match('application/pdf|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document|text/plain')) {
+                  toast({
+                    title: "Invalid file type",
+                    description: "Please upload a PDF, DOCX, or TXT file",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                setResumeFile(file);
+              }
+            }}
+          >
             <div className="flex items-center justify-center flex-col">
               <Upload className="text-gray-400 h-8 w-8 mb-2" />
               <p className="text-sm text-gray-500">
                 {resumeFile ? resumeFile.name : "Drag and drop your resume here or"}
               </p>
-              <label htmlFor="resume-upload" className="mt-2 text-primary font-medium cursor-pointer">
+              <label className="mt-2 text-primary font-medium cursor-pointer">
                 Browse files
                 <input
-                  id="resume-upload"
                   type="file"
                   className="hidden"
                   accept=".pdf,.doc,.docx,.txt"

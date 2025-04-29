@@ -306,10 +306,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/applications", upload.single('resume'), async (req: Request, res: Response) => {
     try {
+      console.log("Application submission received");
+      console.log("Body:", req.body);
+      console.log("File:", req.file ? `File received: ${req.file.originalname} (${req.file.mimetype}, ${req.file.size} bytes)` : "No file received");
+      
       const applicationData = {
         ...req.body,
         jobId: req.body.jobId ? parseInt(req.body.jobId) : undefined,
-        resumeUrl: req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : undefined
+        resumeUrl: req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : null
       };
       
       const validatedData = insertJobApplicationSchema.parse(applicationData);
@@ -321,6 +325,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.status(201).json({ message: "Application submitted successfully" });
     } catch (error) {
+      console.error("Error processing application:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid application data", errors: error.format() });
       }
