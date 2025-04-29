@@ -12,7 +12,8 @@ async function main() {
       ADD COLUMN IF NOT EXISTS screenshots TEXT[] DEFAULT '{}',
       ADD COLUMN IF NOT EXISTS demo_url TEXT DEFAULT '',
       ADD COLUMN IF NOT EXISTS logo TEXT DEFAULT '',
-      ADD COLUMN IF NOT EXISTS features TEXT[] DEFAULT '{}';
+      ADD COLUMN IF NOT EXISTS features TEXT[] DEFAULT '{}',
+      ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT false;
     `);
     
     console.log('Migration completed successfully');
