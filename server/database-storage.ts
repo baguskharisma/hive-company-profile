@@ -3,6 +3,7 @@ import {
   users, type User, type InsertUser,
   projects, type Project, type InsertProject,
   services, type Service, type InsertService,
+  products, type Product, type InsertProduct,
   jobOpenings, type JobOpening, type InsertJobOpening,
   jobApplications, type JobApplication, type InsertJobApplication,
   blogArticles, type BlogArticle, type InsertBlogArticle
@@ -114,6 +115,46 @@ export class DatabaseStorage implements IStorage {
 
   async deleteService(id: number): Promise<boolean> {
     const results = await db.delete(services).where(eq(services.id, id)).returning();
+    return results.length > 0;
+  }
+  
+  // Products
+  async getAllProducts(): Promise<Product[]> {
+    return await db.select().from(products).orderBy(asc(products.id));
+  }
+
+  async getPopularProducts(): Promise<Product[]> {
+    return await db.select().from(products).where(eq(products.isPopular, true));
+  }
+
+  async getProductById(id: number): Promise<Product | undefined> {
+    const results = await db.select().from(products).where(eq(products.id, id));
+    return results[0];
+  }
+
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    return await db.select().from(products).where(eq(products.category, category));
+  }
+
+  async createProduct(product: InsertProduct): Promise<Product> {
+    const results = await db.insert(products).values({
+      ...product,
+      createdAt: new Date()
+    }).returning();
+    return results[0];
+  }
+
+  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined> {
+    const results = await db.update(products)
+      .set(product)
+      .where(eq(products.id, id))
+      .returning();
+    
+    return results[0];
+  }
+
+  async deleteProduct(id: number): Promise<boolean> {
+    const results = await db.delete(products).where(eq(products.id, id)).returning();
     return results.length > 0;
   }
 
@@ -340,6 +381,86 @@ export class DatabaseStorage implements IStorage {
           description: 'Data-driven insights and optimization strategies to improve performance and ROI of your digital assets.',
           icon: 'chart-line',
           features: ['Performance analysis', 'Conversion rate optimization', 'A/B testing'],
+          createdAt: new Date()
+        }
+      ]);
+    }
+
+    // Check if there are any products
+    const existingProducts = await db.select().from(products).limit(1);
+    if (existingProducts.length === 0) {
+      console.log('Seeding products...');
+      await db.insert(products).values([
+        {
+          name: 'PixelPerfect CMS',
+          description: 'A headless content management system designed for creative agencies and digital publishers.',
+          category: 'Content Management',
+          price: 'From $49/month',
+          features: [
+            'Intuitive drag-and-drop interface',
+            'API-first architecture',
+            'Multi-language support',
+            'Advanced media management',
+            'Version control',
+            'Customizable workflows',
+            'Real-time collaboration'
+          ],
+          imageUrl: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&auto=format&fit=crop',
+          isPopular: true,
+          createdAt: new Date()
+        },
+        {
+          name: 'CreativeFlow Project Manager',
+          description: 'Project management solution tailored for creative teams with resource allocation and client approval workflows.',
+          category: 'Project Management',
+          price: 'From $39/month',
+          features: [
+            'Visual kanban boards',
+            'Time tracking',
+            'Client approval workflows',
+            'Resource allocation',
+            'Budget management',
+            'Gantt charts',
+            'Integration with design tools'
+          ],
+          imageUrl: 'https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=600&auto=format&fit=crop',
+          isPopular: true,
+          createdAt: new Date()
+        },
+        {
+          name: 'DesignVault Asset Manager',
+          description: 'Digital asset management platform with AI-powered tagging and version control for creative files.',
+          category: 'Asset Management',
+          price: 'From $29/month',
+          features: [
+            'AI-powered auto-tagging',
+            'Advanced search capabilities',
+            'Version control',
+            'Asset conversion',
+            'Brand kit management',
+            'Rights management',
+            'Integration with Adobe Creative Cloud'
+          ],
+          imageUrl: 'https://images.unsplash.com/photo-1542744094-3a31f272c490?w=600&auto=format&fit=crop',
+          isPopular: false,
+          createdAt: new Date()
+        },
+        {
+          name: 'MarketPulse Analytics',
+          description: 'Marketing analytics platform with visual reporting and campaign performance tracking.',
+          category: 'Analytics',
+          price: 'From $59/month',
+          features: [
+            'Custom dashboard creation',
+            'Campaign performance tracking',
+            'Social media analytics',
+            'Conversion tracking',
+            'Audience segmentation',
+            'Competitive analysis',
+            'Automated reporting'
+          ],
+          imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop',
+          isPopular: false,
           createdAt: new Date()
         }
       ]);
