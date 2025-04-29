@@ -21,7 +21,6 @@ import NotFound from "@/pages/not-found";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminProjects from "@/pages/admin/projects";
 import AdminServices from "@/pages/admin/services";
-import AdminProducts from "@/pages/admin/products";
 import AdminCareers from "@/pages/admin/careers";
 import AdminBlog from "@/pages/admin/blog";
 
@@ -41,7 +40,6 @@ function Router() {
       {/* Admin Routes - Protected */}
       <ProtectedRoute path="/admin/dashboard" component={AdminDashboard} requireAdmin={true} />
       <ProtectedRoute path="/admin/projects" component={AdminProjects} requireAdmin={true} />
-      <ProtectedRoute path="/admin/products" component={AdminProducts} requireAdmin={true} />
       <ProtectedRoute path="/admin/services" component={AdminServices} requireAdmin={true} />
       <ProtectedRoute path="/admin/careers" component={AdminCareers} requireAdmin={true} />
       <ProtectedRoute path="/admin/blog" component={AdminBlog} requireAdmin={true} />

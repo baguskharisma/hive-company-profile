@@ -6,7 +6,7 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import ApplicationForm from "@/components/careers/application-form";
 import { JobOpening } from "@shared/schema";
-import { Briefcase, MapPin } from "lucide-react";
+import { Briefcase, MapPin, DollarSign } from "lucide-react";
 
 export default function CareersPage() {
   const [selectedJob, setSelectedJob] = useState<JobOpening | null>(null);
@@ -123,7 +123,7 @@ export default function CareersPage() {
                         <MapPin className="mr-1 h-4 w-4" /> {job.location}
                       </span>
                       <span className="flex items-center">
-                        <span className="mr-1 font-medium">IDR</span> {job.salary}
+                        <DollarSign className="mr-1 h-4 w-4" /> {job.salary}
                       </span>
                     </div>
                     <p className="text-gray-600 mb-4">{job.description}</p>

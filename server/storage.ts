@@ -2,7 +2,6 @@ import {
   users, type User, type InsertUser,
   projects, type Project, type InsertProject,
   services, type Service, type InsertService,
-  products, type Product, type InsertProduct,
   jobOpenings, type JobOpening, type InsertJobOpening,
   jobApplications, type JobApplication, type InsertJobApplication,
   blogArticles, type BlogArticle, type InsertBlogArticle
@@ -33,15 +32,6 @@ export interface IStorage {
   createService(service: InsertService): Promise<Service>;
   updateService(id: number, service: Partial<InsertService>): Promise<Service | undefined>;
   deleteService(id: number): Promise<boolean>;
-  
-  // Products
-  getAllProducts(): Promise<Product[]>;
-  getPopularProducts(): Promise<Product[]>;
-  getProductById(id: number): Promise<Product | undefined>;
-  getProductsByCategory(category: string): Promise<Product[]>;
-  createProduct(product: InsertProduct): Promise<Product>;
-  updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
-  deleteProduct(id: number): Promise<boolean>;
   
   // Job Openings
   getAllJobOpenings(): Promise<JobOpening[]>;
@@ -74,7 +64,6 @@ export class MemStorage implements IStorage {
   private usersData: Map<number, User>;
   private projectsData: Map<number, Project>;
   private servicesData: Map<number, Service>;
-  private productsData: Map<number, Product>;
   private jobOpeningsData: Map<number, JobOpening>;
   private jobApplicationsData: Map<number, JobApplication>;
   private blogArticlesData: Map<number, BlogArticle>;
@@ -84,7 +73,6 @@ export class MemStorage implements IStorage {
   private currentUserId: number;
   private currentProjectId: number;
   private currentServiceId: number;
-  private currentProductId: number;
   private currentJobOpeningId: number;
   private currentJobApplicationId: number;
   private currentBlogArticleId: number;
@@ -93,7 +81,6 @@ export class MemStorage implements IStorage {
     this.usersData = new Map();
     this.projectsData = new Map();
     this.servicesData = new Map();
-    this.productsData = new Map();
     this.jobOpeningsData = new Map();
     this.jobApplicationsData = new Map();
     this.blogArticlesData = new Map();
@@ -101,7 +88,6 @@ export class MemStorage implements IStorage {
     this.currentUserId = 1;
     this.currentProjectId = 1;
     this.currentServiceId = 1;
-    this.currentProductId = 1;
     this.currentJobOpeningId = 1;
     this.currentJobApplicationId = 1;
     this.currentBlogArticleId = 1;
@@ -222,55 +208,6 @@ export class MemStorage implements IStorage {
   
   async deleteService(id: number): Promise<boolean> {
     return this.servicesData.delete(id);
-  }
-  
-  // Products
-  async getAllProducts(): Promise<Product[]> {
-    return Array.from(this.productsData.values());
-  }
-  
-  async getPopularProducts(): Promise<Product[]> {
-    return Array.from(this.productsData.values()).filter(
-      (product) => product.isPopular
-    );
-  }
-  
-  async getProductById(id: number): Promise<Product | undefined> {
-    return this.productsData.get(id);
-  }
-  
-  async getProductsByCategory(category: string): Promise<Product[]> {
-    return Array.from(this.productsData.values()).filter(
-      (product) => product.category === category
-    );
-  }
-  
-  async createProduct(product: InsertProduct): Promise<Product> {
-    const id = this.currentProductId++;
-    const now = new Date();
-    const newProduct: Product = { ...product, id, createdAt: now };
-    this.productsData.set(id, newProduct);
-    return newProduct;
-  }
-  
-  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined> {
-    const existingProduct = this.productsData.get(id);
-    
-    if (!existingProduct) {
-      return undefined;
-    }
-    
-    const updatedProduct: Product = {
-      ...existingProduct,
-      ...product,
-    };
-    
-    this.productsData.set(id, updatedProduct);
-    return updatedProduct;
-  }
-  
-  async deleteProduct(id: number): Promise<boolean> {
-    return this.productsData.delete(id);
   }
   
   // Job Openings
@@ -496,74 +433,6 @@ export class MemStorage implements IStorage {
     
     services.forEach(service => {
       this.createService(service);
-    });
-    
-    // Seed products
-    const products: InsertProduct[] = [
-      {
-        name: 'Pixel CRM',
-        description: 'An all-in-one customer relationship management solution designed for creative agencies to manage client interactions, projects, and sales pipelines.',
-        category: 'Business Solutions',
-        price: 'From $29/month',
-        features: [
-          'Client management',
-          'Project tracking',
-          'Sales pipeline',
-          'Email integration',
-          'Custom reporting'
-        ],
-        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop',
-        isPopular: true
-      },
-      {
-        name: 'Pixel CMS',
-        description: 'A powerful content management system that makes it easy to create, manage, and publish content for websites and digital platforms.',
-        category: 'Content Solutions',
-        price: 'From $19/month',
-        features: [
-          'Intuitive editor',
-          'Media management',
-          'SEO tools',
-          'Multi-user support',
-          'Version control'
-        ],
-        imageUrl: 'https://images.unsplash.com/photo-1643116774075-acc00caa9a7b?w=600&auto=format&fit=crop',
-        isPopular: true
-      },
-      {
-        name: 'Pixel ERP',
-        description: 'A comprehensive enterprise resource planning system that integrates all aspects of your business into one unified platform.',
-        category: 'Business Solutions',
-        price: 'From $49/month',
-        features: [
-          'Finance management',
-          'Inventory control',
-          'HR management',
-          'Supply chain tracking',
-          'Business intelligence'
-        ],
-        imageUrl: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&auto=format&fit=crop',
-        isPopular: false
-      },
-      {
-        name: 'Pixel Analytics',
-        description: 'An advanced analytics platform that helps you understand user behavior and make data-driven decisions.',
-        category: 'Analytics Tools',
-        price: 'From $24/month',
-        features: [
-          'Real-time dashboards',
-          'User behavior tracking',
-          'Conversion analytics',
-          'Custom reports',
-          'Data export'
-        ],
-        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop',
-        isPopular: false
-      }
-    ];
-    
-    products.forEach(product => {
-      this.createProduct(product);
     });
     
     // Seed job openings

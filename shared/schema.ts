@@ -83,24 +83,6 @@ export const insertJobApplicationSchema = createInsertSchema(jobApplications).om
   createdAt: true,
 });
 
-// Products schema
-export const products = pgTable("products", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description").notNull(),
-  category: text("category").notNull(),
-  price: text("price").notNull(),
-  features: text("features").array().notNull(),
-  imageUrl: text("image_url").notNull(),
-  isPopular: boolean("is_popular").default(false).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const insertProductSchema = createInsertSchema(products).omit({
-  id: true,
-  createdAt: true,
-});
-
 // Blog articles schema
 export const blogArticles = pgTable("blog_articles", {
   id: serial("id").primaryKey(),
@@ -129,9 +111,6 @@ export type InsertProject = z.infer<typeof insertProjectSchema>;
 
 export type Service = typeof services.$inferSelect;
 export type InsertService = z.infer<typeof insertServiceSchema>;
-
-export type Product = typeof products.$inferSelect;
-export type InsertProduct = z.infer<typeof insertProductSchema>;
 
 export type JobOpening = typeof jobOpenings.$inferSelect;
 export type InsertJobOpening = z.infer<typeof insertJobOpeningSchema>;
