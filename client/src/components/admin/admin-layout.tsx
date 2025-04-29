@@ -90,7 +90,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map((item) => (
             <Link key={item.href} href={item.href}>
-              <a
+              <div
                 className={cn(
                   "flex items-center py-2 px-4 rounded-md text-sm transition-colors",
                   location === item.href
@@ -100,7 +100,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               >
                 {item.icon}
                 {item.title}
-              </a>
+              </div>
             </Link>
           ))}
         </nav>
