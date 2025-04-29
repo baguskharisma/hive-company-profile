@@ -57,7 +57,7 @@ export interface IStorage {
   deleteBlogArticle(id: number): Promise<boolean>;
   
   // Session store
-  sessionStore: ReturnType<typeof createMemoryStore>;
+  sessionStore: session.Store;
 }
 
 export class MemStorage implements IStorage {
@@ -68,7 +68,7 @@ export class MemStorage implements IStorage {
   private jobApplicationsData: Map<number, JobApplication>;
   private blogArticlesData: Map<number, BlogArticle>;
   
-  sessionStore: ReturnType<typeof createMemoryStore>;
+  sessionStore: session.Store;
   
   private currentUserId: number;
   private currentProjectId: number;
@@ -566,4 +566,12 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+import { DatabaseStorage } from "./database-storage";
+
+// Use DatabaseStorage instead of MemStorage for persistent storage
+export const storage = new DatabaseStorage();
+
+// Seed initial data
+storage.seedInitialData().catch(error => {
+  console.error("Error seeding initial data:", error);
+});
