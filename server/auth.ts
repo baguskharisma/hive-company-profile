@@ -15,17 +15,40 @@ declare global {
 
 const scryptAsync = promisify(scrypt);
 
+// Simple flag to indicate if we're using development plaintext passwords
+const USE_PLAINTEXT_PASSWORDS_IN_DEV = true;
+
 async function hashPassword(password: string) {
+  if (USE_PLAINTEXT_PASSWORDS_IN_DEV) {
+    // During development, just store the plain password
+    return password;
+  }
+  
   const salt = randomBytes(16).toString("hex");
   const buf = (await scryptAsync(password, salt, 64)) as Buffer;
   return `${buf.toString("hex")}.${salt}`;
 }
 
 async function comparePasswords(supplied: string, stored: string) {
-  const [hashed, salt] = stored.split(".");
-  const hashedBuf = Buffer.from(hashed, "hex");
-  const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-  return timingSafeEqual(hashedBuf, suppliedBuf);
+  if (USE_PLAINTEXT_PASSWORDS_IN_DEV) {
+    // During development, compare directly
+    return supplied === stored;
+  }
+  
+  // Only attempt splitting and crypto comparison if the stored password has the expected format
+  if (stored.includes('.')) {
+    try {
+      const [hashed, salt] = stored.split(".");
+      const hashedBuf = Buffer.from(hashed, "hex");
+      const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
+      return timingSafeEqual(hashedBuf, suppliedBuf);
+    } catch (error) {
+      console.error("Error comparing passwords:", error);
+      return false;
+    }
+  }
+  
+  return false;
 }
 
 export function setupAuth(app: Express) {
