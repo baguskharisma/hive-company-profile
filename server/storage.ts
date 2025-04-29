@@ -2,6 +2,7 @@ import {
   users, type User, type InsertUser,
   projects, type Project, type InsertProject,
   services, type Service, type InsertService,
+  products, type Product, type InsertProduct,
   jobOpenings, type JobOpening, type InsertJobOpening,
   jobApplications, type JobApplication, type InsertJobApplication,
   blogArticles, type BlogArticle, type InsertBlogArticle
@@ -32,6 +33,15 @@ export interface IStorage {
   createService(service: InsertService): Promise<Service>;
   updateService(id: number, service: Partial<InsertService>): Promise<Service | undefined>;
   deleteService(id: number): Promise<boolean>;
+  
+  // Products
+  getAllProducts(): Promise<Product[]>;
+  getPopularProducts(): Promise<Product[]>;
+  getProductById(id: number): Promise<Product | undefined>;
+  getProductsByCategory(category: string): Promise<Product[]>;
+  createProduct(product: InsertProduct): Promise<Product>;
+  updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
+  deleteProduct(id: number): Promise<boolean>;
   
   // Job Openings
   getAllJobOpenings(): Promise<JobOpening[]>;
@@ -64,6 +74,7 @@ export class MemStorage implements IStorage {
   private usersData: Map<number, User>;
   private projectsData: Map<number, Project>;
   private servicesData: Map<number, Service>;
+  private productsData: Map<number, Product>;
   private jobOpeningsData: Map<number, JobOpening>;
   private jobApplicationsData: Map<number, JobApplication>;
   private blogArticlesData: Map<number, BlogArticle>;
@@ -73,6 +84,7 @@ export class MemStorage implements IStorage {
   private currentUserId: number;
   private currentProjectId: number;
   private currentServiceId: number;
+  private currentProductId: number;
   private currentJobOpeningId: number;
   private currentJobApplicationId: number;
   private currentBlogArticleId: number;
@@ -81,6 +93,7 @@ export class MemStorage implements IStorage {
     this.usersData = new Map();
     this.projectsData = new Map();
     this.servicesData = new Map();
+    this.productsData = new Map();
     this.jobOpeningsData = new Map();
     this.jobApplicationsData = new Map();
     this.blogArticlesData = new Map();
@@ -88,6 +101,7 @@ export class MemStorage implements IStorage {
     this.currentUserId = 1;
     this.currentProjectId = 1;
     this.currentServiceId = 1;
+    this.currentProductId = 1;
     this.currentJobOpeningId = 1;
     this.currentJobApplicationId = 1;
     this.currentBlogArticleId = 1;
