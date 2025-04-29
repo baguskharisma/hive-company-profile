@@ -5,18 +5,25 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import ApplicationForm from "@/components/careers/application-form";
+import JobApplicationModal from "@/components/careers/job-application-modal";
 import { JobOpening } from "@shared/schema";
 import { Briefcase, MapPin, DollarSign } from "lucide-react";
 
 export default function CareersPage() {
   const [selectedJob, setSelectedJob] = useState<JobOpening | null>(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const { data: jobs, isLoading } = useQuery<JobOpening[]>({
     queryKey: ["/api/jobs"],
   });
 
   const handleApplyNow = (job: JobOpening) => {
+    setSelectedJob(job);
+    setIsModalOpen(true);
+  };
+
+  const handleScrollToForm = (job: JobOpening) => {
     setSelectedJob(job);
     setShowApplicationForm(true);
     setTimeout(() => {
@@ -319,6 +326,13 @@ export default function CareersPage() {
       </section>
       
       <Footer />
+      
+      {/* Job Application Modal */}
+      <JobApplicationModal 
+        job={selectedJob} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </>
   );
 }

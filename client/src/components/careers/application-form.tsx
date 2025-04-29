@@ -29,6 +29,7 @@ import { Loader2, Upload } from "lucide-react";
 
 interface ApplicationFormProps {
   selectedJob: JobOpening | null;
+  onSuccess?: () => void;
 }
 
 const applicationSchema = insertJobApplicationSchema.extend({
@@ -39,7 +40,7 @@ const applicationSchema = insertJobApplicationSchema.extend({
   coverLetter: z.string().optional(),
 });
 
-export default function ApplicationForm({ selectedJob }: ApplicationFormProps) {
+export default function ApplicationForm({ selectedJob, onSuccess }: ApplicationFormProps) {
   const { toast } = useToast();
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   
@@ -98,6 +99,9 @@ export default function ApplicationForm({ selectedJob }: ApplicationFormProps) {
       });
       form.reset();
       setResumeFile(null);
+      if (onSuccess) {
+        onSuccess();
+      }
     },
     onError: (error) => {
       toast({
