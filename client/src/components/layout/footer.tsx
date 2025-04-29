@@ -67,7 +67,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link href="/" className="text-slate-100 hover:text-secondary transition-all">About Us</Link></li>
               <li><Link href="/showcase" className="text-slate-100 hover:text-secondary transition-all">Our Work</Link></li>
-              <li><Link href="/services" className="text-slate-100 hover:text-secondary transition-all">Services</Link></li>
+              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Services</Link></li>
               <li><Link href="/careers" className="text-slate-100 hover:text-secondary transition-all">Careers</Link></li>
               <li><Link href="/blog" className="text-slate-100 hover:text-secondary transition-all">Blog</Link></li>
               <li><Link href="#contact" className="text-slate-100 hover:text-secondary transition-all">Contact</Link></li>
