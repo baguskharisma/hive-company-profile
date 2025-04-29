@@ -8,7 +8,8 @@ import {
   insertServiceSchema,
   insertJobOpeningSchema,
   insertJobApplicationSchema,
-  insertBlogArticleSchema
+  insertBlogArticleSchema,
+  insertProductSchema
 } from "@shared/schema";
 import multer from "multer";
 

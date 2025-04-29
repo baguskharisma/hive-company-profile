@@ -102,6 +102,26 @@ export const insertBlogArticleSchema = createInsertSchema(blogArticles).omit({
   createdAt: true,
 });
 
+// Products schema
+export const products = pgTable("products", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  category: text("category").notNull(),
+  price: text("price").notNull(),
+  features: text("features").array().notNull(),
+  screenshots: text("screenshots").array().notNull(),
+  demoUrl: text("demo_url").notNull(),
+  logo: text("logo").notNull(),
+  featured: boolean("featured").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertProductSchema = createInsertSchema(products).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -120,3 +140,6 @@ export type InsertJobApplication = z.infer<typeof insertJobApplicationSchema>;
 
 export type BlogArticle = typeof blogArticles.$inferSelect;
 export type InsertBlogArticle = z.infer<typeof insertBlogArticleSchema>;
+
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = z.infer<typeof insertProductSchema>;

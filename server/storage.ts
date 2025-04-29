@@ -4,7 +4,8 @@ import {
   services, type Service, type InsertService,
   jobOpenings, type JobOpening, type InsertJobOpening,
   jobApplications, type JobApplication, type InsertJobApplication,
-  blogArticles, type BlogArticle, type InsertBlogArticle
+  blogArticles, type BlogArticle, type InsertBlogArticle,
+  products, type Product, type InsertProduct
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -56,6 +57,15 @@ export interface IStorage {
   updateBlogArticle(id: number, article: Partial<InsertBlogArticle>): Promise<BlogArticle | undefined>;
   deleteBlogArticle(id: number): Promise<boolean>;
   
+  // Products
+  getAllProducts(): Promise<Product[]>;
+  getProductById(id: number): Promise<Product | undefined>;
+  getProductsByCategory(category: string): Promise<Product[]>;
+  getFeaturedProducts(): Promise<Product[]>;
+  createProduct(product: InsertProduct): Promise<Product>;
+  updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined>;
+  deleteProduct(id: number): Promise<boolean>;
+  
   // Session store
   sessionStore: session.Store;
 }
@@ -67,6 +77,7 @@ export class MemStorage implements IStorage {
   private jobOpeningsData: Map<number, JobOpening>;
   private jobApplicationsData: Map<number, JobApplication>;
   private blogArticlesData: Map<number, BlogArticle>;
+  private productsData: Map<number, Product>;
   
   sessionStore: session.Store;
   
@@ -76,6 +87,7 @@ export class MemStorage implements IStorage {
   private currentJobOpeningId: number;
   private currentJobApplicationId: number;
   private currentBlogArticleId: number;
+  private currentProductId: number;
 
   constructor() {
     this.usersData = new Map();
@@ -84,6 +96,7 @@ export class MemStorage implements IStorage {
     this.jobOpeningsData = new Map();
     this.jobApplicationsData = new Map();
     this.blogArticlesData = new Map();
+    this.productsData = new Map();
     
     this.currentUserId = 1;
     this.currentProjectId = 1;
@@ -91,6 +104,7 @@ export class MemStorage implements IStorage {
     this.currentJobOpeningId = 1;
     this.currentJobApplicationId = 1;
     this.currentBlogArticleId = 1;
+    this.currentProductId = 1;
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
@@ -321,6 +335,55 @@ export class MemStorage implements IStorage {
   
   async deleteBlogArticle(id: number): Promise<boolean> {
     return this.blogArticlesData.delete(id);
+  }
+  
+  // Products
+  async getAllProducts(): Promise<Product[]> {
+    return Array.from(this.productsData.values());
+  }
+  
+  async getProductById(id: number): Promise<Product | undefined> {
+    return this.productsData.get(id);
+  }
+  
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    return Array.from(this.productsData.values()).filter(
+      (product) => product.category === category
+    );
+  }
+  
+  async getFeaturedProducts(): Promise<Product[]> {
+    return Array.from(this.productsData.values()).filter(
+      (product) => product.featured
+    );
+  }
+  
+  async createProduct(product: InsertProduct): Promise<Product> {
+    const id = this.currentProductId++;
+    const now = new Date();
+    const newProduct: Product = { ...product, id, createdAt: now };
+    this.productsData.set(id, newProduct);
+    return newProduct;
+  }
+  
+  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined> {
+    const existingProduct = this.productsData.get(id);
+    
+    if (!existingProduct) {
+      return undefined;
+    }
+    
+    const updatedProduct: Product = {
+      ...existingProduct,
+      ...product,
+    };
+    
+    this.productsData.set(id, updatedProduct);
+    return updatedProduct;
+  }
+  
+  async deleteProduct(id: number): Promise<boolean> {
+    return this.productsData.delete(id);
   }
   
   private seedInitialData() {
@@ -562,6 +625,146 @@ export class MemStorage implements IStorage {
     
     blogArticles.forEach(article => {
       this.createBlogArticle(article);
+    });
+    
+    // Seed products
+    const products: InsertProduct[] = [
+      {
+        name: 'PixelCRM',
+        description: 'A comprehensive customer relationship management system designed for creative agencies.',
+        category: 'CRM',
+        price: '$29/month per user',
+        features: [
+          'Contact management',
+          'Lead tracking',
+          'Task automation',
+          'Deal pipeline',
+          'Email integration',
+          'Analytics dashboard'
+        ],
+        screenshots: [
+          'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1496171367470-9ed9a91ea931?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&auto=format&fit=crop'
+        ],
+        demoUrl: 'https://demo.pixelperfect.com/crm',
+        logo: 'https://images.unsplash.com/photo-1568633608592-ab6e24ddfa0d?w=200&auto=format&fit=crop',
+        featured: true
+      },
+      {
+        name: 'PixelERP',
+        description: 'An enterprise resource planning solution that streamlines operations for creative businesses.',
+        category: 'ERP',
+        price: '$49/month per user',
+        features: [
+          'Project management',
+          'Resource allocation',
+          'Time tracking',
+          'Invoicing and billing',
+          'Financial reporting',
+          'Inventory management'
+        ],
+        screenshots: [
+          'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1590402494610-2c378a9114c6?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop'
+        ],
+        demoUrl: 'https://demo.pixelperfect.com/erp',
+        logo: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=200&auto=format&fit=crop',
+        featured: true
+      },
+      {
+        name: 'PixelCMS',
+        description: 'A flexible content management system that empowers designers and content creators.',
+        category: 'CMS',
+        price: '$19/month',
+        features: [
+          'Visual editor',
+          'Template system',
+          'Media library',
+          'Multi-user collaboration',
+          'Content scheduling',
+          'SEO tools'
+        ],
+        screenshots: [
+          'https://images.unsplash.com/photo-1593642532842-98d0fd5ebc1a?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&auto=format&fit=crop'
+        ],
+        demoUrl: 'https://demo.pixelperfect.com/cms',
+        logo: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=200&auto=format&fit=crop',
+        featured: true
+      },
+      {
+        name: 'PixelAnalytics',
+        description: 'Advanced analytics platform for measuring digital performance and user engagement.',
+        category: 'Analytics',
+        price: '$39/month',
+        features: [
+          'Real-time data tracking',
+          'User behavior analysis',
+          'Custom event tracking',
+          'Conversion funnels',
+          'Heatmaps',
+          'A/B testing'
+        ],
+        screenshots: [
+          'https://images.unsplash.com/photo-1543286386-713bdd548da4?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop'
+        ],
+        demoUrl: 'https://demo.pixelperfect.com/analytics',
+        logo: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200&auto=format&fit=crop',
+        featured: false
+      },
+      {
+        name: 'PixelProject',
+        description: 'Project management software designed specifically for creative teams and agencies.',
+        category: 'Project Management',
+        price: '$24/month per user',
+        features: [
+          'Task management',
+          'Team collaboration',
+          'Client portal',
+          'File sharing',
+          'Time tracking',
+          'Kanban boards'
+        ],
+        screenshots: [
+          'https://images.unsplash.com/photo-1522542550221-31fd19575a2d?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1431540015161-0bf868a2d407?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop'
+        ],
+        demoUrl: 'https://demo.pixelperfect.com/project',
+        logo: 'https://images.unsplash.com/photo-1550136513-548af4445338?w=200&auto=format&fit=crop',
+        featured: false
+      },
+      {
+        name: 'PixelHR',
+        description: 'Human resources management system streamlining hiring, onboarding, and employee management.',
+        category: 'HR',
+        price: '$19/month per user',
+        features: [
+          'Applicant tracking',
+          'Employee onboarding',
+          'Performance reviews',
+          'Time-off management',
+          'Compensation tracking',
+          'Document management'
+        ],
+        screenshots: [
+          'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&auto=format&fit=crop'
+        ],
+        demoUrl: 'https://demo.pixelperfect.com/hr',
+        logo: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=200&auto=format&fit=crop',
+        featured: false
+      }
+    ];
+    
+    products.forEach(product => {
+      this.createProduct(product);
     });
   }
 }
