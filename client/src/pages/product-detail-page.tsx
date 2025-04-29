@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'wouter';
-import { Layout } from '@/components/layout/layout';
+import Header from '@/components/layout/header';
+import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -21,7 +22,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
 
 export default function ProductDetailPage() {
   const { id } = useParams();
-  const productId = parseInt(id);
+  const productId = parseInt(id || '');
   
   const { data: product, isLoading, error } = useQuery<Product>({
     queryKey: [`/api/products/${productId}`],
@@ -30,17 +31,20 @@ export default function ProductDetailPage() {
   
   if (isLoading) {
     return (
-      <Layout>
+      <>
+        <Header />
         <div className="container py-20 flex justify-center">
           <div className="animate-spin h-8 w-8 border-t-2 border-primary rounded-full"></div>
         </div>
-      </Layout>
+        <Footer />
+      </>
     );
   }
   
   if (error || !product) {
     return (
-      <Layout>
+      <>
+        <Header />
         <div className="container py-20 text-center">
           <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
           <p className="text-muted-foreground mb-8">The product you're looking for doesn't exist or has been removed.</p>
@@ -48,12 +52,14 @@ export default function ProductDetailPage() {
             <Link href="/products">Back to Products</Link>
           </Button>
         </div>
-      </Layout>
+        <Footer />
+      </>
     );
   }
   
   return (
-    <Layout>
+    <>
+      <Header />
       <div className="container py-8">
         <div className="mb-6">
           <Button variant="ghost" size="sm" asChild className="gap-1">
@@ -194,6 +200,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
-    </Layout>
+      <Footer />
+    </>
   );
 }

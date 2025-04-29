@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'wouter';
-import { Layout } from '@/components/layout/layout';
-import { PageHeader } from '@/components/layout/page-header';
+import Header from '@/components/layout/header';
+import Footer from '@/components/layout/footer';
 import { Product } from '@shared/schema';
 import { Monitor, Database, Layout as LayoutIcon, BarChart4, Users, Calendar } from 'lucide-react';
 
@@ -37,11 +37,17 @@ export default function ProductsPage() {
     : products.filter(product => product.category === activeTab);
 
   return (
-    <Layout>
-      <PageHeader
-        title="Our Products"
-        description="Powerful solutions to streamline your business operations"
-      />
+    <>
+      <Header />
+      
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Products</h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Powerful solutions to streamline your business operations
+          </p>
+        </div>
+      </section>
       
       <div className="container py-12 space-y-8">
         <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
@@ -110,6 +116,8 @@ export default function ProductsPage() {
           </Button>
         </div>
       </div>
-    </Layout>
+      
+      <Footer />
+    </>
   );
 }

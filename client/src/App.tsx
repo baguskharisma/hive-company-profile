@@ -10,6 +10,8 @@ import { ProtectedRoute } from "./lib/protected-route";
 import HomePage from "@/pages/home-page";
 import ShowcasePage from "@/pages/showcase-page";
 import ServicesPage from "@/pages/services-page";
+import ProductsPage from "@/pages/products-page";
+import ProductDetailPage from "@/pages/product-detail-page";
 import CareersPage from "@/pages/careers-page";
 import BlogPage from "@/pages/blog-page";
 import BlogArticlePage from "@/pages/blog-article-page";
@@ -21,6 +23,7 @@ import NotFound from "@/pages/not-found";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminProjects from "@/pages/admin/projects";
 import AdminServices from "@/pages/admin/services";
+import AdminProducts from "@/pages/admin/admin-products";
 import AdminCareers from "@/pages/admin/careers";
 import AdminBlog from "@/pages/admin/blog";
 
@@ -32,6 +35,8 @@ function Router() {
       <Route path="/showcase" component={ShowcasePage} />
       <Route path="/showcase/:id" component={ProjectDetailPage} />
       <Route path="/services" component={ServicesPage} />
+      <Route path="/products" component={ProductsPage} />
+      <Route path="/products/:id" component={ProductDetailPage} />
       <Route path="/careers" component={CareersPage} />
       <Route path="/blog" component={BlogPage} />
       <Route path="/blog/:id" component={BlogArticlePage} />
@@ -41,6 +46,7 @@ function Router() {
       <ProtectedRoute path="/admin/dashboard" component={AdminDashboard} requireAdmin={true} />
       <ProtectedRoute path="/admin/projects" component={AdminProjects} requireAdmin={true} />
       <ProtectedRoute path="/admin/services" component={AdminServices} requireAdmin={true} />
+      <ProtectedRoute path="/admin/products" component={AdminProducts} requireAdmin={true} />
       <ProtectedRoute path="/admin/careers" component={AdminCareers} requireAdmin={true} />
       <ProtectedRoute path="/admin/blog" component={AdminBlog} requireAdmin={true} />
       

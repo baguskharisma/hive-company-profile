@@ -29,6 +29,8 @@ interface DataTableProps<T> {
   actions?: (item: T) => React.ReactNode;
   searchKey?: keyof T;
   onRowClick?: (item: T) => void;
+  isLoading?: boolean;
+  searchColumn?: string;
 }
 
 export function DataTable<T>({
@@ -37,15 +39,20 @@ export function DataTable<T>({
   actions,
   searchKey,
   onRowClick,
+  isLoading = false,
+  searchColumn,
 }: DataTableProps<T>) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  
+  // Use searchColumn if provided, otherwise use searchKey
+  const searchKeyToUse = searchColumn ? searchColumn as keyof T : searchKey;
 
   // Filter data based on search term
-  const filteredData = searchKey
+  const filteredData = searchKeyToUse
     ? data.filter((item) => {
-        const value = item[searchKey];
+        const value = item[searchKeyToUse];
         if (typeof value === "string") {
           return value.toLowerCase().includes(searchTerm.toLowerCase());
         }
@@ -63,7 +70,7 @@ export function DataTable<T>({
 
   return (
     <div className="w-full">
-      {searchKey && (
+      {searchKeyToUse && (
         <div className="flex items-center space-x-2 mb-4">
           <div className="relative w-full max-w-sm">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -88,7 +95,18 @@ export function DataTable<T>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length + (actions ? 1 : 0)}
+                  className="h-24 text-center"
+                >
+                  <div className="flex justify-center">
+                    <div className="animate-spin h-8 w-8 border-t-2 border-primary rounded-full"></div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : currentItems.length > 0 ? (
               currentItems.map((item, index) => (
                 <TableRow
                   key={index}

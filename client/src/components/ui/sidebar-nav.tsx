@@ -79,6 +79,11 @@ export const adminNavItems = [
     icon: <Settings className="h-4 w-4" />,
   },
   {
+    title: "Products",
+    href: "/admin/products",
+    icon: <BarChart className="h-4 w-4" />,
+  },
+  {
     title: "Careers",
     href: "/admin/careers",
     icon: <UserPlus className="h-4 w-4" />,
