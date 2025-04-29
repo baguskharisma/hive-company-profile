@@ -228,9 +228,9 @@ export default function AdminProducts() {
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center text-white">
+                  {/* <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center text-white">
                     <Package2 className="h-5 w-5" />
-                  </div>
+                  </div> */}
                   <h1 className="font-poppins font-bold text-2xl">Products Management</h1>
                 </div>
                 <Button
