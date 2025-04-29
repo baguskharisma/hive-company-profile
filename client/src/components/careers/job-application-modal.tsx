@@ -147,7 +147,12 @@ export default function JobApplicationModal({
                   <p className="text-gray-600 mb-6">
                     Complete the form below to apply for this position. We'll review your application and get back to you soon.
                   </p>
-                  <ApplicationForm selectedJob={job} />
+                  <ApplicationForm 
+                    selectedJob={job} 
+                    onSuccess={() => {
+                      onClose();
+                    }}
+                  />
                 </TabsContent>
               </div>
             </Tabs>
