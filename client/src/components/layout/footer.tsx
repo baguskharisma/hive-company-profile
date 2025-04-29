@@ -67,7 +67,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link href="/" className="text-slate-100 hover:text-secondary transition-all">About Us</Link></li>
               <li><Link href="/showcase" className="text-slate-100 hover:text-secondary transition-all">Our Work</Link></li>
-              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Services</Link></li>
+              <li><Link href="/services" className="text-slate-100 hover:text-secondary transition-all">Services</Link></li>
               <li><Link href="/careers" className="text-slate-100 hover:text-secondary transition-all">Careers</Link></li>
               <li><Link href="/blog" className="text-slate-100 hover:text-secondary transition-all">Blog</Link></li>
               <li><Link href="#contact" className="text-slate-100 hover:text-secondary transition-all">Contact</Link></li>
@@ -77,12 +77,12 @@ export default function Footer() {
           <div>
             <h3 className="font-poppins font-bold text-xl mb-6">Services</h3>
             <ul className="space-y-3">
-              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Web Development</Link></li>
-              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Mobile App Development</Link></li>
-              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">UI/UX Design</Link></li>
-              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Digital Marketing</Link></li>
-              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Brand Identity</Link></li>
-              <li><Link href="/products" className="text-slate-100 hover:text-secondary transition-all">Analytics & Optimization</Link></li>
+              <li><Link href="/services" className="text-slate-100 hover:text-secondary transition-all">Web Development</Link></li>
+              <li><Link href="/services" className="text-slate-100 hover:text-secondary transition-all">Mobile App Development</Link></li>
+              <li><Link href="/services" className="text-slate-100 hover:text-secondary transition-all">UI/UX Design</Link></li>
+              <li><Link href="/services" className="text-slate-100 hover:text-secondary transition-all">Digital Marketing</Link></li>
+              <li><Link href="/services" className="text-slate-100 hover:text-secondary transition-all">Brand Identity</Link></li>
+              <li><Link href="/services" className="text-slate-100 hover:text-secondary transition-all">Analytics & Optimization</Link></li>
             </ul>
           </div>
           

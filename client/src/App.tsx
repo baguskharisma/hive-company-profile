@@ -31,7 +31,7 @@ function Router() {
       <Route path="/" component={HomePage} />
       <Route path="/showcase" component={ShowcasePage} />
       <Route path="/showcase/:id" component={ProjectDetailPage} />
-      <Route path="/products" component={ProductsPage} />
+      <Route path="/services" component={ProductsPage} />
       <Route path="/careers" component={CareersPage} />
       <Route path="/blog" component={BlogPage} />
       <Route path="/blog/:id" component={BlogArticlePage} />

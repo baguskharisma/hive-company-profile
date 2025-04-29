@@ -44,9 +44,9 @@ export default function Header() {
             Showcase
             {isActive('/showcase') && <span className="absolute bottom-[-2px] left-0 w-full h-[2px] bg-primary"></span>}
           </Link>
-          <Link href="/products" className={`relative font-manrope font-medium ${isActive('/products') ? 'text-primary' : ''}`}>
-            Products
-            {isActive('/products') && <span className="absolute bottom-[-2px] left-0 w-full h-[2px] bg-primary"></span>}
+          <Link href="/services" className={`relative font-manrope font-medium ${isActive('/services') ? 'text-primary' : ''}`}>
+            Services
+            {isActive('/services') && <span className="absolute bottom-[-2px] left-0 w-full h-[2px] bg-primary"></span>}
           </Link>
           <Link href="/careers" className={`relative font-manrope font-medium ${isActive('/careers') ? 'text-primary' : ''}`}>
             Careers
@@ -105,7 +105,7 @@ export default function Header() {
           >
             <Link href="/" className="block py-2 font-manrope font-medium">Home</Link>
             <Link href="/showcase" className="block py-2 font-manrope font-medium">Showcase</Link>
-            <Link href="/products" className="block py-2 font-manrope font-medium">Products</Link>
+            <Link href="/services" className="block py-2 font-manrope font-medium">Services</Link>
             <Link href="/careers" className="block py-2 font-manrope font-medium">Careers</Link>
             <Link href="/blog" className="block py-2 font-manrope font-medium">Blog</Link>
             
