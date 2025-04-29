@@ -85,23 +85,8 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/register", async (req, res, next) => {
-    // Check if username already exists
-    const existingUser = await storage.getUserByUsername(req.body.username);
-    if (existingUser) {
-      return res.status(400).send("Username already exists");
-    }
-
-    // Create a new user with hashed password
-    const user = await storage.createUser({
-      ...req.body,
-      password: await hashPassword(req.body.password),
-    });
-
-    // Auto-login after registration
-    req.login(user, (err) => {
-      if (err) return next(err);
-      res.status(201).json(user);
-    });
+    // Registration has been disabled
+    return res.status(403).send("Registration is currently disabled");
   });
 
   app.post("/api/login", passport.authenticate("local"), (req, res) => {
