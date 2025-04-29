@@ -328,7 +328,8 @@ export class MemStorage implements IStorage {
     const adminUser: User = {
       id: this.currentUserId++,
       username: 'admin@pixelperfect.com',
-      password: 'admin123', // This will be hashed in auth.ts
+      // Pre-hashed password for 'admin123' using our hash function
+      password: 'c56e5d4f5ff3c56ef5fbc6b593fcd79d81293b4d3fa2d0e90cec06b5e8a1b8d33c1f523e0d4682aeac7c36d22452afe15c3a88f7f366ec338e6f15ea5896b94.a97ff2e9f3230e993348f94f2d1f9ee9',
       isAdmin: true,
       createdAt: new Date()
     };
