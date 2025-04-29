@@ -5,7 +5,8 @@ import {
   services, type Service, type InsertService,
   jobOpenings, type JobOpening, type InsertJobOpening,
   jobApplications, type JobApplication, type InsertJobApplication,
-  blogArticles, type BlogArticle, type InsertBlogArticle
+  blogArticles, type BlogArticle, type InsertBlogArticle,
+  products, type Product, type InsertProduct
 } from "@shared/schema";
 import { eq, desc, asc, and } from "drizzle-orm";
 import session from "express-session";
@@ -218,6 +219,47 @@ export class DatabaseStorage implements IStorage {
     return results.length > 0;
   }
 
+  // Products
+  async getAllProducts(): Promise<Product[]> {
+    return await db.select().from(products).orderBy(asc(products.id));
+  }
+
+  async getProductById(id: number): Promise<Product | undefined> {
+    const results = await db.select().from(products).where(eq(products.id, id));
+    return results[0];
+  }
+
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    return await db.select().from(products).where(eq(products.category, category));
+  }
+
+  async getFeaturedProducts(): Promise<Product[]> {
+    return await db.select().from(products).where(eq(products.featured, true));
+  }
+
+  async createProduct(product: InsertProduct): Promise<Product> {
+    const results = await db.insert(products).values({
+      ...product,
+      createdAt: new Date(),
+      featured: product.featured || false
+    }).returning();
+    return results[0];
+  }
+
+  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | undefined> {
+    const results = await db.update(products)
+      .set(product)
+      .where(eq(products.id, id))
+      .returning();
+    
+    return results[0];
+  }
+
+  async deleteProduct(id: number): Promise<boolean> {
+    const results = await db.delete(products).where(eq(products.id, id)).returning();
+    return results.length > 0;
+  }
+
   // Seed the database with initial data
   async seedInitialData() {
     // Check if there's already an admin user
@@ -375,6 +417,74 @@ export class DatabaseStorage implements IStorage {
           salary: 'Competitive',
           description: 'Develop and implement digital marketing strategies for our clients. Experience with SEO, PPC, and content marketing required.',
           active: true,
+          createdAt: new Date()
+        }
+      ]);
+    }
+
+    // Check if there are any products
+    const existingProducts = await db.select().from(products).limit(1);
+    if (existingProducts.length === 0) {
+      console.log('Seeding products...');
+      await db.insert(products).values([
+        {
+          name: 'PixelPerfect CRM',
+          description: 'A complete customer relationship management solution with advanced analytics and automation features.',
+          category: 'CRM',
+          features: ['Contact management', 'Sales forecasting', 'Email automation', 'Analytics dashboard', 'Mobile app'],
+          price: 'From $49/month',
+          screenshots: [
+            'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
+            'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=800&q=80'
+          ],
+          demoUrl: 'https://demo.pixelperfectagency.com/crm',
+          logo: 'https://via.placeholder.com/150',
+          featured: true,
+          createdAt: new Date()
+        },
+        {
+          name: 'Content Studio CMS',
+          description: 'Enterprise-grade content management system with powerful editing tools and seamless integration capabilities.',
+          category: 'CMS',
+          features: ['Visual editor', 'Version control', 'API access', 'Multi-language support', 'SEO tools'],
+          price: 'From $29/month',
+          screenshots: [
+            'https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&q=80',
+            'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&q=80'
+          ],
+          demoUrl: 'https://demo.pixelperfectagency.com/cms',
+          logo: 'https://via.placeholder.com/150',
+          featured: true,
+          createdAt: new Date()
+        },
+        {
+          name: 'Data Insight Analytics',
+          description: 'Comprehensive data analytics platform with advanced visualization and reporting capabilities.',
+          category: 'Analytics',
+          features: ['Real-time dashboards', 'Custom reports', 'Data integration', 'Predictive analytics', 'Export functionality'],
+          price: 'From $99/month',
+          screenshots: [
+            'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
+            'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80'
+          ],
+          demoUrl: 'https://demo.pixelperfectagency.com/analytics',
+          logo: 'https://via.placeholder.com/150',
+          featured: false,
+          createdAt: new Date()
+        },
+        {
+          name: 'SecureVault',
+          description: 'Enterprise security solution for protecting sensitive data and managing access across your organization.',
+          category: 'Security',
+          features: ['Two-factor authentication', 'Encryption', 'Access logs', 'Compliance tools', 'Security audits'],
+          price: 'From $79/month',
+          screenshots: [
+            'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80',
+            'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80'
+          ],
+          demoUrl: 'https://demo.pixelperfectagency.com/security',
+          logo: 'https://via.placeholder.com/150',
+          featured: false,
           createdAt: new Date()
         }
       ]);
