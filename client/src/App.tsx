@@ -9,7 +9,7 @@ import { ProtectedRoute } from "./lib/protected-route";
 // Public Pages
 import HomePage from "@/pages/home-page";
 import ShowcasePage from "@/pages/showcase-page";
-import ProductsPage from "@/pages/products-page";
+import ServicesPage from "@/pages/services-page";
 import CareersPage from "@/pages/careers-page";
 import BlogPage from "@/pages/blog-page";
 import BlogArticlePage from "@/pages/blog-article-page";
@@ -31,7 +31,7 @@ function Router() {
       <Route path="/" component={HomePage} />
       <Route path="/showcase" component={ShowcasePage} />
       <Route path="/showcase/:id" component={ProjectDetailPage} />
-      <Route path="/services" component={ProductsPage} />
+      <Route path="/services" component={ServicesPage} />
       <Route path="/careers" component={CareersPage} />
       <Route path="/blog" component={BlogPage} />
       <Route path="/blog/:id" component={BlogArticlePage} />
