@@ -123,7 +123,7 @@ export default function CareersPage() {
                         <MapPin className="mr-1 h-4 w-4" /> {job.location}
                       </span>
                       <span className="flex items-center">
-                        <span className="mr-1 font-medium">Rp</span> {job.salary}
+                        <span className="mr-1 font-medium">IDR</span> {job.salary}
                       </span>
                     </div>
                     <p className="text-gray-600 mb-4">{job.description}</p>
